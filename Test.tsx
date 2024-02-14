@@ -1,19 +1,21 @@
 import React from 'react'
 
-import { LargeText, MediumText } from 'component-library';
+import { BigText, SmallerText } from 'component-library';
 
 
 export default function Test() {
   return (
       <div>
-        <LargeText as="p">Hello</LargeText>
-        <LargeText as="p" subdued>Hello</LargeText>
-        <LargeText as="p" subdued bold>Hello</LargeText>
-        <LargeText as="p" subdued light>Hello</LargeText>
-        <LargeText as="p" semi>Hello</LargeText>
-        <LargeText as="p" sx={{ color: 'red' }}>Hello</LargeText>
-        <LargeText as="h3" bold>Hello</LargeText>
-        <MediumText as="p">Hello</MediumText>
+        <BigText as="p">Hello</BigText>
+        <BigText as="p" subdued>Hello</BigText>
+        <BigText as="p" subdued bold>Hello</BigText>
+        <BigText as="p" subdued light>Hello</BigText>
+        <BigText as="p" semi>Hello</BigText>
+        <BigText as="p" sx={{ color: 'red' }}>Hello</BigText>
+        <BigText as="h3" bold>Hello</BigText>
+        <SmallerText as="p">Hello</SmallerText>
         </div>
   );
 }
+
+

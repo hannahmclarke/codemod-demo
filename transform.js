@@ -1,9 +1,9 @@
-/* Transforms <LargeText, as="p"> instances to <Text as="p"> and modifies any attributes
+/* Transforms <BigText, as="p"> instances to <Text as="p"> and modifies any attributes
  * to the correct Text attributes.
- * Any other <LargeText> elements will remain unchanged.
+ * Any other <BigText> elements will remain unchanged.
  *
  * To run this codemod, run the following command:
- * npx jscodeshift -t <codemod path>/transform.js <directory path> --extensions=tsx,ts,js,jsx
+ * npx jscodeshift -t app/componentCodemods/BigTextAsP/transform.js <directory path> --extensions=tsx,ts,js,jsx
  *
  */
 
@@ -18,19 +18,19 @@ export default function (file, api) {
   const j = api.jscodeshift;
   const root = j(file.source);
 
-  let isLargeTextStillPresent = false;
+  let isBigTextStillPresent = false;
 
-  // Find and rename all <LargeText as="p"...> instances to <Text as="p" ...>
+  // Find and rename all <BigText as="p"...> instances to <Text as="p" ...>
   root
     .find(j.JSXElement, {
       openingElement: {
         name: {
-          name: "LargeText",
+          name: "BigText",
         },
       },
     })
     .forEach((path) => {
-      // If LargeText has an 'isLoading' attribute, do not modify it
+      // If BigText has an 'isLoading' attribute, do not modify it
       if (
         path.node.openingElement.attributes.some(
           (attr) => attr.name.name === "isLoading"
@@ -38,7 +38,7 @@ export default function (file, api) {
       ) {
         return;
       }
-      // If LargeText has an 'as="p"" attribute, rename it to Text
+      // If BigText has an 'as="p"" attribute, rename it to Text
       if (
         path.node.openingElement.attributes.some(
           (attr) => attr.name.name === "as" && attr.value.value === "p"
@@ -80,13 +80,13 @@ export default function (file, api) {
           }
         });
       } else {
-        isLargeTextStillPresent = true;
+        isBigTextStillPresent = true;
       }
       /**
        * Check whether 'as="p" is present before adding default variant
        * to instances that do not have a variant present.
        * This ensures that the default variant is not added to other instances of
-       * LargeText that have not been modified.
+       * BigText that have not been modified.
        *
        */
 
@@ -110,10 +110,10 @@ export default function (file, api) {
   /**
    * The imports need to be modified as follows:
    * If no components have been changed, no changes are made to the imports.
-   * If no Large Text components still exist, the LargeText import is replaced with Text.
-   * If LargeText components still exist, the Text import is added if it does not already exist.
-   * If no Large Text components exist within the file no changes are made to the imports.
-   * If no LargeText components still exist, but there is already a Text import, the LargeText import is removed.
+   * If no BigText components still exist, the BigText import is replaced with Text.
+   * If BigText components still exist, the Text import is added if it does not already exist.
+   * If no BigText components exist within the file no changes are made to the imports.
+   * If no BigText components still exist, but there is already a Text import, the BigText import is removed.
    */
 
   // Check if any Text components exist
@@ -141,20 +141,20 @@ export default function (file, api) {
 
   // Find and replace (or add) in imports
   if (!hasTextImport && hasTransformedComponents) {
-    // Replace LargeText import with Text import if no LargeText components still exist
-    if (!isLargeTextStillPresent) {
+    // Replace BigText import with Text import if no BigText components still exist
+    if (!isBigTextStillPresent) {
       root.find(j.ImportDeclaration).forEach((path) => {
         path.node.specifiers.forEach((specifier) => {
           if (
             j.ImportSpecifier.check(specifier) &&
-            specifier.imported.name === "LargeText"
+            specifier.imported.name === "BigText"
           ) {
             specifier.imported.name = "Text";
           }
         });
       });
     }
-    // Add a Text import if none exist and Large Text components still exist
+    // Add a Text import if none exist and BigText components still exist
     else {
       root
         .find(j.ImportDeclaration, {
@@ -168,11 +168,11 @@ export default function (file, api) {
         });
     }
   }
-  // Remove the LargeText import if none remain, but a Text import is already present
+  // Remove the BigText import if none remain, but a Text import is already present
   else if (
     hasTextImport &&
     hasTransformedComponents &&
-    !isLargeTextStillPresent
+    !isBigTextStillPresent
   ) {
     root
       .find(j.ImportDeclaration, {
@@ -185,7 +185,7 @@ export default function (file, api) {
           (specifier) =>
             !(
               j.ImportSpecifier.check(specifier) &&
-              specifier.imported.name === "LargeText"
+              specifier.imported.name === "BigText"
             )
         );
       });
