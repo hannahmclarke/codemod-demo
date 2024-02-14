@@ -30,14 +30,6 @@ export default function (file, api) {
       },
     })
     .forEach((path) => {
-      // If BigText has an 'isLoading' attribute, do not modify it
-      if (
-        path.node.openingElement.attributes.some(
-          (attr) => attr.name.name === "isLoading"
-        )
-      ) {
-        return;
-      }
       // If BigText has an 'as="p"" attribute, rename it to Text
       if (
         path.node.openingElement.attributes.some(
