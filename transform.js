@@ -39,10 +39,10 @@ export default function (file, api) {
         path.node.openingElement.name.name = "Text";
         path.node.closingElement.name.name = "Text";
 
-        // remove spaced' attribute
+        // remove 'underlined' attribute
         path.node.openingElement.attributes =
           path.node.openingElement.attributes.filter(
-            (attr) => attr.name.name !== "spaced"
+            (attr) => attr.name.name !== "underlined"
           );
 
         // Modify other attributes
