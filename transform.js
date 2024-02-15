@@ -3,7 +3,7 @@
  * Any other <BigText> elements will remain unchanged.
  *
  * To run this codemod, run the following command:
- * npx jscodeshift -t app/componentCodemods/BigTextAsP/transform.js <directory path> --extensions=tsx,ts,js,jsx
+ * npx jscodeshift -t <directory path>/transform.js <directory path to transform> --extensions=tsx,ts,js,jsx
  *
  */
 
@@ -30,7 +30,7 @@ export default function (file, api) {
       },
     })
     .forEach((path) => {
-      // If BigText has an 'as="p"" attribute, rename it to Text
+      // If BigText has an 'as="p"" prop, rename it to Text
       if (
         path.node.openingElement.attributes.some(
           (attr) => attr.name.name === "as" && attr.value.value === "p"
@@ -39,13 +39,13 @@ export default function (file, api) {
         path.node.openingElement.name.name = "Text";
         path.node.closingElement.name.name = "Text";
 
-        // remove 'underlined' attribute
+        // remove 'underlined' prop
         path.node.openingElement.attributes =
           path.node.openingElement.attributes.filter(
             (attr) => attr.name.name !== "underlined"
           );
 
-        // Modify other attributes
+        // Modify other props
         path.node.openingElement.attributes.forEach((attr) => {
           // 'subdued' becomes 'color="secondary"
           if (attr.name.name === "subdued") {
